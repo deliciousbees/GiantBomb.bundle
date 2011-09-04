@@ -2,13 +2,28 @@
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleIdentifier</key>
-    <string>com.plexapp.plugins.giantbomb</string>
-    <key>PlexClientPlatforms</key>
-    <string>MacOSX,iOS,Android,LGTV</string>
-    <key>PlexFrameworkVersion</key>
-    <string>2</string>
-    <key>PlexPluginClass</key>
-    <string>Content</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.plexapp.plugins.giantbomb</string>
+	<key>PlexClientPlatforms</key>
+	<string>MacOSX,iOS,Android,LGTV</string>
+	<key>PlexFrameworkVersion</key>
+	<string>2</string>
+	<key>PlexPluginClass</key>
+	<string>Content</string>
+	<key>PlexPluginMode</key>
+	<string>AlwaysOn</string>
+	<key>PlexMediaContainer</key>
+	<array>
+		<string>MP4</string>
+		<string>Flash</string>
+	</array>
+	<key>PlexAudioCodec</key>
+	<array>
+		<string>AAC</string>
+	</array>
+	<key>PlexVideoCodec</key>
+	<array>
+		<string>H264</string>
+	</array>
 </dict>
 </plist>
