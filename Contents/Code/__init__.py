@@ -1,4 +1,4 @@
-API_PATH = 'http://api.giantbomb.com/'
+API_PATH = 'http://api.giantbomb.com'
 API_KEY = '70d735e54938286d6d9142727877107ced20e5ff'
 
 ART = 'art-default.png'
@@ -15,6 +15,7 @@ def ValidatePrefs():
 @handler('/video/giantbomb', 'Giant Bomb')
 def MainMenu():
     if 'api_key' in Dict:
+        global API_KEY
         API_KEY = Dict['api_key']
 
     oc = ObjectContainer()
@@ -79,15 +80,15 @@ def MainMenu():
                 )
             )
 
-    oc.add(
-        InputDirectoryObject(
-            key=Callback(Videos),
-            title='Search',
-            prompt='Search',
-            thumb=R(ICON),
-            art=R(ART)
-        )
-    )
+#    oc.add(
+#        InputDirectoryObject(
+#            key=Callback(Videos),
+#            title='Search',
+#            prompt='Search',
+#            thumb=R(ICON),
+#            art=R(ART)
+#        )
+#    )
 
     oc.add(
         PrefsObject(
@@ -126,6 +127,7 @@ def EnduranceRunMenu():
 @route('/video/giantbomb/videos')
 def Videos(cat_id=None, query=None):
     if 'api_key' in Dict:
+        global API_KEY
         API_KEY = Dict['api_key']
 
     oc = ObjectContainer()
@@ -164,6 +166,8 @@ def Videos(cat_id=None, query=None):
             url = vid[quality] + '&api_key=' + API_KEY
         else:
             url = vid[quality]
+
+        Log(url)
 
         oc.add(
                 VideoClipObject(
