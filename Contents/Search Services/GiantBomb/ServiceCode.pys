@@ -1,0 +1,33 @@
+API_PATH = 'http://api.giantbomb.com'
+API_KEY = '70d735e54938286d6d9142727877107ced20e5ff'
+
+SEARCH_URL = '%s/search/?api_key=%s&query=%s&resources=video&format=JSON'
+
+BASE_URL    = 'http://www.giantbomb.com'
+
+def Search(query):
+  json = JSON.ObjectFromURL(SEARCH_URL % (API_PATH, API_KEY, query))
+  #Log(json['results'])
+  
+  oc = ObjectContainer(title2='Search Results')
+    
+  for result in json['results']:
+    title = result['name']
+    #Log(title)
+    summary = result['deck']
+    video_url = result['site_detail_url']
+    #Log(url)
+    thumbUrl = result['image']['super_url']
+    #Log(thumbUrl)
+    oc.add(VideoClipObject(url=video_url, title=title, summary=summary, thumb=Callback(Thumb, url=thumbUrl), art=R('art-default.png')))
+    
+  return  oc
+
+def Thumb(url):
+  if url:
+    try:
+      data = HTTP.Request(url, cacheTime=CACHE_1MONTH).content
+      return DataObject(data, 'image/jpeg')
+    except:
+      return Redirect(R('icon-default.png'))
+  return None
