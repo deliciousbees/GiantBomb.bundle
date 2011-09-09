@@ -80,15 +80,16 @@ def MainMenu():
                 )
             )
 
-#    oc.add(
-#        InputDirectoryObject(
-#            key=Callback(Videos),
-#            title='Search',
-#            prompt='Search',
-#            thumb=R(ICON),
-#            art=R(ART)
-#        )
-#    )
+    oc.add(
+        SearchDirectoryObject(
+            identifier="com.plexapp.search.giantbomb",
+            title="Search",
+            summary="Search Giant Bomb videos",
+            prompt="Search for...",
+            thumb=R(ICON),
+            art=R(ART)
+        )
+    )
 
     oc.add(
         PrefsObject(

@@ -25,5 +25,19 @@
 	<array>
 		<string>H264</string>
 	</array>
+		
+	<key>PlexSearchServices</key>
+	<dict>
+	    <key>GiantBomb</key>
+	    <dict>
+		<key>Identifier</key>
+		<string>com.plexapp.search.giantbomb</string>
+	    </dict>
+	</dict>
+	
+	<key>PlexPluginConsoleLogging</key>
+	<string>1</string>
+	<key>PlexPluginDevMode</key>
+	<string>0</string>
 </dict>
 </plist>
