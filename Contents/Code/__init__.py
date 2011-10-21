@@ -1,6 +1,6 @@
 API_PATH = 'http://api.giantbomb.com'
 API_KEY = '70d735e54938286d6d9142727877107ced20e5ff'
-#http://api.giantbomb.com/video/5115/?api_key=70d735e54938286d6d9142727877107ced20e5ff
+
 ART = 'art-default.png'
 ICON = 'icon-default.png'
 
