@@ -36,7 +36,7 @@ def MainMenu():
 
         oc.add(
             VideoClipObject(
-                key=WebVideoURL(url),
+                url=url,
                 title='LIVE: ' + chat['title'],
                 summary=chat['deck'],
                 source_title='Justin.tv',
@@ -82,7 +82,7 @@ def MainMenu():
 
     oc.add(
         SearchDirectoryObject(
-            identifier="com.plexapp.search.giantbomb",
+            identifier="com.plexapp.plugins.giantbomb",
             title="Search",
             summary="Search Giant Bomb videos",
             prompt="Search for...",
@@ -126,16 +126,14 @@ def EnduranceRunMenu():
     return oc
 
 @route('/video/giantbomb/videos')
-def Videos(cat_id=None, query=None):
+def Videos(cat_id=None):
     if 'api_key' in Dict:
         global API_KEY
         API_KEY = Dict['api_key']
 
     oc = ObjectContainer()
 
-    if query:
-        videos = JSON.ObjectFromURL(API_PATH + '/search/?api_key=' + API_KEY + '&resources=video&query=' + query + '&format=json')['results']
-    elif cat_id == '5-DP':
+    if cat_id == '5-DP':
         videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + API_KEY + '&video_type=5&offset=161&format=json')['results']
     elif cat_id == '5-P4':
         videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + API_KEY + '&video_type=5&format=json')['results']
@@ -148,6 +146,8 @@ def Videos(cat_id=None, query=None):
         videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + API_KEY + '&video_type=' + cat_id + '&sort=-publish_date&format=json')['results']
     else:
         videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + API_KEY + '&sort=-publish_date&format=json')['results']
+        
+    Log(videos)
 
     if Prefs['quality'] == 'Auto':
         if 'hd_url' in videos[0]:
@@ -163,16 +163,16 @@ def Videos(cat_id=None, query=None):
         else:
             vid_art = vid['wallpaper_image']
 
-        if quality == 'hd_url':
-            url = vid[quality] + '&api_key=' + API_KEY
-        else:
-            url = vid[quality]
+        #if quality == 'hd_url':
+        #    url = vid[quality] + '&api_key=' + API_KEY
+        #else:
+        #    url = vid[quality]
 
-        Log(url)
+        #Log(url)
 
         oc.add(
                 VideoClipObject(
-                    key=url,
+                    url=vid['site_detail_url'],
                     title=vid['name'],
                     summary=vid['deck'],
                     thumb=vid['image']['super_url'],
