@@ -36,12 +36,13 @@ def MainMenu():
 
         oc.add(
             VideoClipObject(
-                url=url,
+                key=WebVideoURL(url),
                 title='LIVE: ' + chat['title'],
                 summary=chat['deck'],
                 source_title='Justin.tv',
                 thumb=chat['image']['super_url'],
-                art=R(ART)
+                art=R(ART),
+                rating_key=chat['channel_name']
             )
         )
 
@@ -146,8 +147,6 @@ def Videos(cat_id=None):
         videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + API_KEY + '&video_type=' + cat_id + '&sort=-publish_date&format=json')['results']
     else:
         videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + API_KEY + '&sort=-publish_date&format=json')['results']
-        
-    Log(videos)
 
     if Prefs['quality'] == 'Auto':
         if 'hd_url' in videos[0]:
@@ -163,20 +162,19 @@ def Videos(cat_id=None):
         else:
             vid_art = vid['wallpaper_image']
 
-        #if quality == 'hd_url':
-        #    url = vid[quality] + '&api_key=' + API_KEY
-        #else:
-        #    url = vid[quality]
-
-        #Log(url)
+        if quality == 'hd_url':
+            url = vid[quality] + '&api_key=' + API_KEY
+        else:
+            url = vid[quality]
 
         oc.add(
                 VideoClipObject(
-                    url=vid['site_detail_url'],
+                    key=url,
                     title=vid['name'],
                     summary=vid['deck'],
                     thumb=vid['image']['super_url'],
-                    art=vid_art
+                    art=vid_art,
+                    rating_key=vid['id']
                 )
         )
 
