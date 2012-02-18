@@ -8,6 +8,8 @@
 	<string>2</string>
 	<key>PlexPluginClass</key>
 	<string>Content</string>
+	<key>PlexClientPlatforms</key>
+	<string>*</string>
 	<key>PlexPluginMode</key>
 	<string>AlwaysOn</string>
 	<key>PlexMediaContainer</key>
