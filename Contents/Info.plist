@@ -21,16 +21,6 @@
 	</array>
 	<key>PlexPluginClass</key>
 	<string>Content</string>
-	<key>PlexPluginMode</key>
-	<string>AlwaysOn</string>
-	<key>PlexSearchServices</key>
-	<dict>
-		<key>GiantBomb</key>
-		<dict>
-			<key>Identifier</key>
-			<string>com.plexapp.plugins.giantbomb</string>
-		</dict>
-	</dict>
 	<key>PlexVideoCodec</key>
 	<array>
 		<string>H264</string>
