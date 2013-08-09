@@ -24,12 +24,11 @@ def MainMenu():
         Dict.Reset()
         Dict.Save()
 
-    '''
     chats = response['results']
     for chat in chats:
-        url = 'http://www.justin.tv/widgets/live_embed_player.swf?channel=' + chat['channel_name'] + '&auto_play=true&start_volume=25'
-        if chat['password']:
-            url += '&publisherGuard=' + chat['password']
+        url = 'http://www.twitch.tv/' + chat['channel_name']
+        #if chat['password']:
+        #    url += '&publisherGuard=' + chat['password']
         try:
             thumb=chat['image']['super_url'],
         except:
@@ -46,7 +45,6 @@ def MainMenu():
                 rating_key=chat['channel_name']
             )
         )
-    '''
 
     oc.add(
         DirectoryObject(
