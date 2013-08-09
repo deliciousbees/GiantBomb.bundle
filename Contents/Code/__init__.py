@@ -30,16 +30,16 @@ def MainMenu():
         #if chat['password']:
         #    url += '&publisherGuard=' + chat['password']
         try:
-            thumb=chat['image']['super_url'],
+            thumb = chat['image']['super_url']
         except:
             thumb = R(ICON)
-
+            
         oc.add(
             VideoClipObject(
                 url=url,
                 title='LIVE: ' + chat['title'],
                 summary=chat['deck'],
-                source_title='Justin.tv',
+                source_title='Twitch.tv',
                 thumb=thumb,
                 art=R(ART),
                 rating_key=chat['channel_name']
