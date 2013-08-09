@@ -14,14 +14,10 @@ def ValidatePrefs():
 
 @handler('/video/giantbomb', 'Giant Bomb')
 def MainMenu():
-    if 'api_key' in Dict:
-        global API_KEY
-        API_KEY = Dict['api_key']
-
     oc = ObjectContainer()
 
     # Live stream
-    response = JSON.ObjectFromURL(API_PATH + '/chats/?api_key=' + API_KEY + '&format=json')
+    response = JSON.ObjectFromURL(API_PATH + '/chats/?api_key=' + ApiKey() + '&format=json')
 
     if response['status_code'] == 100:
         # Revert to the default key
@@ -33,6 +29,10 @@ def MainMenu():
         url = 'http://www.justin.tv/widgets/live_embed_player.swf?channel=' + chat['channel_name'] + '&auto_play=true&start_volume=25'
         if chat['password']:
             url += '&publisherGuard=' + chat['password']
+        try:
+            thumb=chat['image']['super_url'],
+        except:
+            thumb = R(ICON)
 
         oc.add(
             VideoClipObject(
@@ -40,7 +40,7 @@ def MainMenu():
                 title='LIVE: ' + chat['title'],
                 summary=chat['deck'],
                 source_title='Justin.tv',
-                thumb=chat['image']['super_url'],
+                thumb=thumb,
                 art=R(ART),
                 rating_key=chat['channel_name']
             )
@@ -56,7 +56,7 @@ def MainMenu():
         )
     )
 
-    categories = JSON.ObjectFromURL(API_PATH + '/video_types/?api_key=' + API_KEY + '&format=json')['results']
+    categories = JSON.ObjectFromURL(API_PATH + '/video_types/?api_key=' + ApiKey() + '&format=json')['results']
 
     for cat in categories:
         # Endurance Runs
@@ -128,33 +128,21 @@ def EnduranceRunMenu():
 
 @route('/video/giantbomb/videos')
 def Videos(cat_id=None):
-    if 'api_key' in Dict:
-        global API_KEY
-        API_KEY = Dict['api_key']
-
     oc = ObjectContainer()
 
     if cat_id == '5-DP':
-        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + API_KEY + '&video_type=5&offset=161&format=json')['results']
+        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=5&offset=161&format=json')['results']
     elif cat_id == '5-P4':
-        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + API_KEY + '&video_type=5&format=json')['results']
-        videos += JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + API_KEY + '&video_type=5&offset=100&limit=61&format=json')['results']
+        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=5&format=json')['results']
+        videos += JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey + '&video_type=5&offset=100&limit=61&format=json')['results']
         videos = [video for video in videos if not video['name'].startswith('The Matrix Online')]
     elif cat_id == '5-MO':
-        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + API_KEY + '&video_type=5&offset=105&limit=21&format=json')['results']
+        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=5&offset=105&limit=21&format=json')['results']
         videos = [video for video in videos if video['name'].startswith('The Matrix Online')]
     elif cat_id:
-        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + API_KEY + '&video_type=' + cat_id + '&sort=-publish_date&format=json')['results']
+        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=' + cat_id + '&sort=-publish_date&format=json')['results']
     else:
-        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + API_KEY + '&sort=-publish_date&format=json')['results']
-
-    if Prefs['quality'] == 'Auto':
-        if 'hd_url' in videos[0]:
-            quality = 'hd_url'
-        else:
-            quality = 'high_url'
-    else:
-        quality = Prefs['quality'].lower() + '_url'
+        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&sort=-publish_date&format=json')['results']
 
     for vid in videos:
         if 'wallpaper_image' not in vid or not vid['wallpaper_image']: # or whatever it gets called
@@ -162,14 +150,9 @@ def Videos(cat_id=None):
         else:
             vid_art = vid['wallpaper_image']
 
-        if quality == 'hd_url':
-            url = vid[quality] + '&api_key=' + API_KEY
-        else:
-            url = vid[quality]
-
         oc.add(
                 VideoClipObject(
-                    key=url,
+                    url=vid['site_detail_url'],
                     title=vid['name'],
                     summary=vid['deck'],
                     thumb=vid['image']['super_url'],
@@ -179,3 +162,9 @@ def Videos(cat_id=None):
         )
 
     return oc
+
+def ApiKey():
+    if 'api_key' in Dict:
+        return Dict['api_key']
+    else:
+        return API_KEY
