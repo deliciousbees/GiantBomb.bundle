@@ -24,6 +24,7 @@ def MainMenu():
         Dict.Reset()
         Dict.Save()
 
+    '''
     chats = response['results']
     for chat in chats:
         url = 'http://www.justin.tv/widgets/live_embed_player.swf?channel=' + chat['channel_name'] + '&auto_play=true&start_volume=25'
@@ -36,7 +37,7 @@ def MainMenu():
 
         oc.add(
             VideoClipObject(
-                key=WebVideoURL(url),
+                url=url,
                 title='LIVE: ' + chat['title'],
                 summary=chat['deck'],
                 source_title='Justin.tv',
@@ -45,6 +46,7 @@ def MainMenu():
                 rating_key=chat['channel_name']
             )
         )
+    '''
 
     oc.add(
         DirectoryObject(
