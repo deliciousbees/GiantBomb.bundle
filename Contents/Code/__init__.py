@@ -9,8 +9,11 @@ def ValidatePrefs():
     if link_code and len(link_code) == 6:
         response = JSON.ObjectFromURL(API_PATH + '/validate?link_code=' + link_code + '&format=json')
         if 'api_key' in response:
-            Dict['api_key'] = response['api_key']
-            Dict.Save()
+            if response['api_key']:
+                Dict['api_key'] = response['api_key']
+                Dict.Save()
+            else:
+                return ObjectContainer(header="Invalid API key", message="Please log in to GiantBomb.com to generate a new API key.")
 
 @handler('/video/giantbomb', 'Giant Bomb')
 def MainMenu():
