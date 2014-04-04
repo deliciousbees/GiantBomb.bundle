@@ -153,9 +153,11 @@ def Videos(cat_id=None):
         else:
             vid_art = vid['wallpaper_image']
 
+        api_key_string = ('&' if '?' in vid['site_detail_url'] else '?') + 'api_key=' + ApiKey()
+
         oc.add(
                 VideoClipObject(
-                    url=vid['site_detail_url'],
+                    url=vid['site_detail_url'] + api_key_string,
                     title=vid['name'],
                     summary=vid['deck'],
                     thumb=vid['image']['super_url'],
