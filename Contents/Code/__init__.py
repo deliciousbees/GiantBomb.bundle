@@ -1,19 +1,8 @@
 API_PATH = 'http://api.giantbomb.com'
 API_KEY = '70d735e54938286d6d9142727877107ced20e5ff'
 
-ART = 'art-default.png'
-ICON = 'icon-default.png'
-
-def ValidatePrefs():
-    link_code = Prefs['link_code'].upper()
-    if link_code and len(link_code) == 6:
-        response = JSON.ObjectFromURL(API_PATH + '/validate?link_code=' + link_code + '&format=json')
-        if 'api_key' in response:
-            if response['api_key']:
-                Dict['api_key'] = response['api_key']
-                Dict.Save()
-            else:
-                return ObjectContainer(header="Invalid API key", message="Please log in to GiantBomb.com to generate a new API key.")
+ART = 'art-default.jpg'
+ICON = 'icon-default.jpg'
 
 @handler('/video/giantbomb', 'Giant Bomb')
 def MainMenu():
@@ -21,13 +10,8 @@ def MainMenu():
 
     # Live stream
     response = JSON.ObjectFromURL(API_PATH + '/chats/?api_key=' + ApiKey() + '&format=json')
-
-    if response['status_code'] == 100:
-        # Revert to the default key
-        Dict.Reset()
-        Dict.Save()
-
     chats = response['results']
+
     for chat in chats:
         url = 'http://www.twitch.tv/' + chat['channel_name']
         #if chat['password']:
@@ -90,14 +74,6 @@ def MainMenu():
             title="Search",
             summary="Search Giant Bomb videos",
             prompt="Search for...",
-            thumb=R(ICON),
-            art=R(ART)
-        )
-    )
-
-    oc.add(
-        PrefsObject(
-            title='Preferences',
             thumb=R(ICON),
             art=R(ART)
         )
@@ -169,7 +145,4 @@ def Videos(cat_id=None):
     return oc
 
 def ApiKey():
-    if 'api_key' in Dict:
-        return Dict['api_key']
-    else:
-        return API_KEY
+    return API_KEY
