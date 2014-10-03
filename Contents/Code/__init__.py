@@ -74,6 +74,16 @@ def MainMenu():
         )
     )
 
+    oc.add(
+        InputDirectoryObject(
+            key=Callback(Videos, cat_id=None),
+            title='Search Videos',
+            summary='Tired of pagination? Use this new fangled search thing to find the videos you\'re looking for!',
+            thumb=R(ICON),
+            prompt='Enter the video title'
+        )
+    )
+
     return oc
 
 @route('/video/giantbomb/erun')
@@ -129,11 +139,13 @@ def EnduranceRunMenu():
 def Videos(cat_id=None, query=None, offset=0):
     oc = ObjectContainer()
 
-    if cat_id and query:
+    if cat_id and query: # for endurance runs
         result = JSON.ObjectFromURL('%s/videos/?api_key=%s&video_type=%s&format=json&sort=publish_date:asc&filter=name:%s&offset=%s' % (API_PATH, ApiKey(), cat_id, query, offset))
-    elif cat_id:
+    elif cat_id: # for categories
         result = JSON.ObjectFromURL('%s/videos/?api_key=%s&video_type=%s&format=json&offset=%s' % (API_PATH, ApiKey(), cat_id, offset))
-    else:
+    elif query: # for search
+        result = JSON.ObjectFromURL('%s/videos/?api_key=%s&format=json&filter=name:%s&offset=%s' % (API_PATH, ApiKey(), query, offset))
+    else: # catch all
         result = JSON.ObjectFromURL('%s/videos/?api_key=%s&format=json&offset=%s' % (API_PATH, ApiKey(), offset))
 
     videos = result['results']
