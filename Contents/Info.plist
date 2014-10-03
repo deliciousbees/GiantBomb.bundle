@@ -20,13 +20,5 @@
             <string>^http://(www\.)?giantbomb\.com/api/video/\d{4}\-\d+/</string>
         </dict>
     </dict>
-    <key>PlexSearchServices</key>
-    <dict>
-       <key>GiantBomb</key>
-       <dict>
-          <key>Identifier</key>
-          <string>com.plexapp.search.giantbomb</string>
-       </dict>
-    </dict>
 </dict>
 </plist>

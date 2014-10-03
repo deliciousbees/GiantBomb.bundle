@@ -60,14 +60,6 @@ def MainMenu():
             )
         )
 
-    # oc.add(
-    #     SearchDirectoryObject(
-    #         identifier="com.plexapp.plugins.giantbombtoo",
-    #         title="Search",
-    #         summary="Search Giant Bomb videos"
-    #     )
-    # )
-
     oc.add(
         PrefsObject(
             title = L('Preferences')
