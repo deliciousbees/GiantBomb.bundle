@@ -68,7 +68,7 @@ def MainMenu():
 
     # oc.add(
     #     SearchDirectoryObject(
-    #         identifier="com.plexapp.plugins.giantbombtoo",
+    #         identifier="com.plexapp.plugins.giantbomb",
     #         title="Search",
     #         summary="Search Giant Bomb videos",
     #         prompt="Search for..."

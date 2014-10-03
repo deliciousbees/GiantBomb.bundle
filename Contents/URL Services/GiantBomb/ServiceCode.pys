@@ -46,7 +46,7 @@ def MediaObjectsForURL(url):
 
 ####################################################################################################
 @indirect
-def PlayVideo(url, fmt='high'):
+def PlayVideo(url, fmt='hd'):
 
     json = JSON.ObjectFromURL(url)
 
