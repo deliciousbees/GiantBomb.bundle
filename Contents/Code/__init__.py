@@ -46,29 +46,23 @@ def MainMenu():
     for cat in categories:
         # Endurance Runs
         if cat['id'] == 5:
-            oc.add(
-                DirectoryObject(
-                    key='/video/giantbomb/erun',
-                    title=cat['name'],
-                    summary=cat['deck'],
-                    thumb=R(ICON),
-                    art=R(ART)
-                )
-            )
+            route = '/video/giantbomb/erun'
         else:
-            oc.add(
-                DirectoryObject(
-                    key='/video/giantbomb/videos/?cat_id=' + str(cat['id']),
-                    title=cat['name'],
-                    summary=cat['deck'],
-                    thumb=R(ICON),
-                    art=R(ART)
-                )
+            route = '/video/giantbomb/videos/?cat_id=' + str(cat['id'])
+
+        oc.add(
+            DirectoryObject(
+                key=route,
+                title=cat['name'],
+                summary=cat['deck'],
+                thumb=R(ICON),
+                art=R(ART)
             )
+        )
 
     # oc.add(
     #     SearchDirectoryObject(
-    #         identifier="com.plexapp.plugins.giantbomb",
+    #         identifier="com.plexapp.plugins.giantbombtoo",
     #         title="Search",
     #         summary="Search Giant Bomb videos"
     #     )
@@ -112,34 +106,37 @@ def EnduranceRunMenu():
     return oc
 
 @route('/video/giantbomb/videos')
-def Videos(cat_id=None, query=None):
+def Videos(cat_id=None, query=None, offset=0):
     oc = ObjectContainer()
 
     if cat_id == '5' and query:
-        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=5&format=json&sort=publish_date:asc&filter=name:' + query)['results']
-        if query == 'Persona 4':
-            videos += JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=5&format=json&sort=publish_date:asc&filter=name:' + query + '&offset=100')['results']
+        result = JSON.ObjectFromURL('%s/videos/?api_key=%s&video_type=5&format=json&sort=publish_date:asc&filter=name:%s&offset=%s' % (API_PATH, ApiKey(), query, offset))
     elif cat_id:
-        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=' + cat_id + '&format=json')['results']
+        result = JSON.ObjectFromURL('%s/videos/?api_key=%s&video_type=%s&format=json&offset=%s' % (API_PATH, ApiKey(), cat_id, offset))
     else:
-        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&format=json')['results']
+        result = JSON.ObjectFromURL('%s/videos/?api_key=%s&format=json&offset=%s' % (API_PATH, ApiKey(), offset))
+
+    videos = result['results']
 
     for vid in videos:
-        if 'wallpaper_image' not in vid or not vid['wallpaper_image']: # or whatever it gets called
-            vid_art = R(ART)
-        else:
-            vid_art = vid['wallpaper_image']
-
-        # api_key_string = ('&' if '?' in vid['site_detail_url'] else '?') + 'api_key=' + ApiKey()
-
         oc.add(
             VideoClipObject(
                 url=vid['api_detail_url'] + '?api_key=' + ApiKey() + '&format=json',
                 title=vid['name'],
                 summary=vid['deck'],
                 thumb=vid['image']['super_url'],
-                art=vid_art,
+                art=R(ART),
                 rating_key=vid['id']
+            )
+        )
+
+    listedSoFar = result['offset'] + result['number_of_page_results']
+    if listedSoFar < result['number_of_total_results']:
+        newOffset = listedSoFar + result['limit']
+        oc.add(
+            NextPageObject(
+                key=Callback(Videos, cat_id=cat_id, query=query, offset=newOffset),
+                title="Next Page"
             )
         )
 
