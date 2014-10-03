@@ -99,6 +99,26 @@ def EnduranceRunMenu():
                 key='/video/giantbomb/videos/?cat_id=5&query=Matrix%20Online',
                 title='The Matrix Online: Not Like This',
                 art=R(ART)
+            ),
+            DirectoryObject(
+                key='/video/giantbomb/videos/?cat_id=10&query=Breaking%20Brad%3A%20Demon%27s%20Souls',
+                title="Breaking Brad: Demon's Souls (Premium)",
+                art=R(ART)
+            ),
+            DirectoryObject(
+                key='/video/giantbomb/videos/?cat_id=10&query=Load%20Our%20Last%20Souls',
+                title="Load Our Last Souls (Premium)",
+                art=R(ART)
+            ),
+            DirectoryObject(
+                key='/video/giantbomb/videos/?cat_id=10&query=Metal%20Gear%20Scanlon',
+                title="Metal Gear Scanlon (Premium)",
+                art=R(ART)
+            ),
+            DirectoryObject(
+                key='/video/giantbomb/videos/?cat_id=10&query=Bradley%20May%20Cry',
+                title="Bradley May Cry (Premium)",
+                art=R(ART)
             )
         ]
     )
@@ -109,8 +129,8 @@ def EnduranceRunMenu():
 def Videos(cat_id=None, query=None, offset=0):
     oc = ObjectContainer()
 
-    if cat_id == '5' and query:
-        result = JSON.ObjectFromURL('%s/videos/?api_key=%s&video_type=5&format=json&sort=publish_date:asc&filter=name:%s&offset=%s' % (API_PATH, ApiKey(), query, offset))
+    if cat_id and query:
+        result = JSON.ObjectFromURL('%s/videos/?api_key=%s&video_type=%s&format=json&sort=publish_date:asc&filter=name:%s&offset=%s' % (API_PATH, ApiKey(), cat_id, query, offset))
     elif cat_id:
         result = JSON.ObjectFromURL('%s/videos/?api_key=%s&video_type=%s&format=json&offset=%s' % (API_PATH, ApiKey(), cat_id, offset))
     else:
