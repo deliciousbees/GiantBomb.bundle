@@ -1,0 +1,8 @@
+[
+    {
+        "id": "apiKey",
+        "label": "Subscribers: To view premium videos, enter your API key:",
+        "type": "text",
+        "default": ""
+    }
+]

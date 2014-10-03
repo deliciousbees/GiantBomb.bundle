@@ -1,4 +1,4 @@
-API_PATH = 'http://api.giantbomb.com'
+API_PATH = 'http://www.giantbomb.com/api'
 API_KEY = '70d735e54938286d6d9142727877107ced20e5ff'
 
 ART = 'art-default.jpg'
@@ -14,13 +14,11 @@ def MainMenu():
 
     for chat in chats:
         url = 'http://www.twitch.tv/' + chat['channel_name']
-        #if chat['password']:
-        #    url += '&publisherGuard=' + chat['password']
         try:
             thumb = chat['image']['super_url']
         except:
             thumb = R(ICON)
-            
+
         oc.add(
             VideoClipObject(
                 url=url,
@@ -68,14 +66,18 @@ def MainMenu():
                 )
             )
 
+    # oc.add(
+    #     SearchDirectoryObject(
+    #         identifier="com.plexapp.plugins.giantbombtoo",
+    #         title="Search",
+    #         summary="Search Giant Bomb videos",
+    #         prompt="Search for..."
+    #     )
+    # )
+
     oc.add(
-        SearchDirectoryObject(
-            identifier="com.plexapp.plugins.giantbomb",
-            title="Search",
-            summary="Search Giant Bomb videos",
-            prompt="Search for...",
-            thumb=R(ICON),
-            art=R(ART)
+        PrefsObject(
+            title = L('Preferences')
         )
     )
 
@@ -119,9 +121,9 @@ def Videos(cat_id=None):
         videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=5&offset=105&limit=21&format=json')['results']
         videos = [video for video in videos if video['name'].startswith('The Matrix Online')]
     elif cat_id:
-        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=' + cat_id + '&sort=-publish_date&format=json')['results']
+        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=' + cat_id + '&format=json')['results']
     else:
-        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&sort=-publish_date&format=json')['results']
+        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&format=json')['results']
 
     for vid in videos:
         if 'wallpaper_image' not in vid or not vid['wallpaper_image']: # or whatever it gets called
@@ -129,20 +131,25 @@ def Videos(cat_id=None):
         else:
             vid_art = vid['wallpaper_image']
 
-        api_key_string = ('&' if '?' in vid['site_detail_url'] else '?') + 'api_key=' + ApiKey()
+        # api_key_string = ('&' if '?' in vid['site_detail_url'] else '?') + 'api_key=' + ApiKey()
 
         oc.add(
-                VideoClipObject(
-                    url=vid['site_detail_url'] + api_key_string,
-                    title=vid['name'],
-                    summary=vid['deck'],
-                    thumb=vid['image']['super_url'],
-                    art=vid_art,
-                    rating_key=vid['id']
-                )
+            VideoClipObject(
+                url=vid['api_detail_url'] + '?api_key=' + ApiKey() + '&format=json',
+                title=vid['name'],
+                summary=vid['deck'],
+                thumb=vid['image']['super_url'],
+                art=vid_art,
+                rating_key=vid['id']
+            )
         )
 
     return oc
 
 def ApiKey():
-    return API_KEY
+    if Prefs['apiKey']:
+        key = Prefs['apiKey']
+    else:
+        key = API_KEY
+
+    return key
