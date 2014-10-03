@@ -70,8 +70,7 @@ def MainMenu():
     #     SearchDirectoryObject(
     #         identifier="com.plexapp.plugins.giantbomb",
     #         title="Search",
-    #         summary="Search Giant Bomb videos",
-    #         prompt="Search for..."
+    #         summary="Search Giant Bomb videos"
     #     )
     # )
 
@@ -88,17 +87,22 @@ def EnduranceRunMenu():
     oc = ObjectContainer(
         objects = [
             DirectoryObject(
-                key='/video/giantbomb/videos/?cat_id=5-DP',
+                key='/video/giantbomb/videos/?cat_id=5&query=Chrono%20Trigger',
+                title='Chrono Trigger',
+                art=R(ART)
+            ),
+            DirectoryObject(
+                key='/video/giantbomb/videos/?cat_id=5&query=Deadly%20Premonition',
                 title='Deadly Premonition',
                 art=R(ART)
             ),
             DirectoryObject(
-                key='/video/giantbomb/videos/?cat_id=5-P4',
+                key='/video/giantbomb/videos/?cat_id=5&query=Persona%204',
                 title='Persona 4',
                 art=R(ART)
             ),
             DirectoryObject(
-                key='/video/giantbomb/videos/?cat_id=5-MO',
+                key='/video/giantbomb/videos/?cat_id=5&query=Matrix%20Online',
                 title='The Matrix Online: Not Like This',
                 art=R(ART)
             )
@@ -108,18 +112,13 @@ def EnduranceRunMenu():
     return oc
 
 @route('/video/giantbomb/videos')
-def Videos(cat_id=None):
+def Videos(cat_id=None, query=None):
     oc = ObjectContainer()
 
-    if cat_id == '5-DP':
-        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=5&offset=161&format=json')['results']
-    elif cat_id == '5-P4':
-        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=5&format=json')['results']
-        videos += JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey + '&video_type=5&offset=100&limit=61&format=json')['results']
-        videos = [video for video in videos if not video['name'].startswith('The Matrix Online')]
-    elif cat_id == '5-MO':
-        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=5&offset=105&limit=21&format=json')['results']
-        videos = [video for video in videos if video['name'].startswith('The Matrix Online')]
+    if cat_id == '5' and query:
+        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=5&format=json&sort=publish_date:asc&filter=name:' + query)['results']
+        if query == 'Persona 4':
+            videos += JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=5&format=json&sort=publish_date:asc&filter=name:' + query + '&offset=100')['results']
     elif cat_id:
         videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=' + cat_id + '&format=json')['results']
     else:
