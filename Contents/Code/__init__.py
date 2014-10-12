@@ -1,4 +1,4 @@
-API_PATH = 'http://api.giantbomb.com'
+API_PATH = 'http://www.giantbomb.com/api'
 API_KEY = '70d735e54938286d6d9142727877107ced20e5ff'
 
 ART = 'art-default.jpg'
@@ -14,13 +14,11 @@ def MainMenu():
 
     for chat in chats:
         url = 'http://www.twitch.tv/' + chat['channel_name']
-        #if chat['password']:
-        #    url += '&publisherGuard=' + chat['password']
         try:
             thumb = chat['image']['super_url']
         except:
             thumb = R(ICON)
-            
+
         oc.add(
             VideoClipObject(
                 url=url,
@@ -48,34 +46,33 @@ def MainMenu():
     for cat in categories:
         # Endurance Runs
         if cat['id'] == 5:
-            oc.add(
-                DirectoryObject(
-                    key='/video/giantbomb/erun',
-                    title=cat['name'],
-                    summary=cat['deck'],
-                    thumb=R(ICON),
-                    art=R(ART)
-                )
-            )
+            route = '/video/giantbomb/erun'
         else:
-            oc.add(
-                DirectoryObject(
-                    key='/video/giantbomb/videos/?cat_id=' + str(cat['id']),
-                    title=cat['name'],
-                    summary=cat['deck'],
-                    thumb=R(ICON),
-                    art=R(ART)
-                )
+            route = '/video/giantbomb/videos/?cat_id=' + str(cat['id'])
+
+        oc.add(
+            DirectoryObject(
+                key=route,
+                title=cat['name'],
+                summary=cat['deck'],
+                thumb=R(ICON),
+                art=R(ART)
             )
+        )
 
     oc.add(
-        SearchDirectoryObject(
-            identifier="com.plexapp.plugins.giantbomb",
-            title="Search",
-            summary="Search Giant Bomb videos",
-            prompt="Search for...",
+        PrefsObject(
+            title = L('Preferences')
+        )
+    )
+
+    oc.add(
+        InputDirectoryObject(
+            key=Callback(Videos, cat_id=None),
+            title='Search Videos',
+            summary='Tired of pagination? Use this new fangled search thing to find the videos you\'re looking for!',
             thumb=R(ICON),
-            art=R(ART)
+            prompt='Enter the video title'
         )
     )
 
@@ -86,18 +83,43 @@ def EnduranceRunMenu():
     oc = ObjectContainer(
         objects = [
             DirectoryObject(
-                key='/video/giantbomb/videos/?cat_id=5-DP',
+                key='/video/giantbomb/videos/?cat_id=5&query=Chrono%20Trigger',
+                title='Chrono Trigger',
+                art=R(ART)
+            ),
+            DirectoryObject(
+                key='/video/giantbomb/videos/?cat_id=5&query=Deadly%20Premonition',
                 title='Deadly Premonition',
                 art=R(ART)
             ),
             DirectoryObject(
-                key='/video/giantbomb/videos/?cat_id=5-P4',
+                key='/video/giantbomb/videos/?cat_id=5&query=Persona%204',
                 title='Persona 4',
                 art=R(ART)
             ),
             DirectoryObject(
-                key='/video/giantbomb/videos/?cat_id=5-MO',
+                key='/video/giantbomb/videos/?cat_id=5&query=Matrix%20Online',
                 title='The Matrix Online: Not Like This',
+                art=R(ART)
+            ),
+            DirectoryObject(
+                key='/video/giantbomb/videos/?cat_id=10&query=Breaking%20Brad%3A%20Demon%27s%20Souls',
+                title="Breaking Brad: Demon's Souls (Premium)",
+                art=R(ART)
+            ),
+            DirectoryObject(
+                key='/video/giantbomb/videos/?cat_id=10&query=Load%20Our%20Last%20Souls',
+                title="Load Our Last Souls (Premium)",
+                art=R(ART)
+            ),
+            DirectoryObject(
+                key='/video/giantbomb/videos/?cat_id=10&query=Metal%20Gear%20Scanlon',
+                title="Metal Gear Scanlon (Premium)",
+                art=R(ART)
+            ),
+            DirectoryObject(
+                key='/video/giantbomb/videos/?cat_id=10&query=Bradley%20May%20Cry',
+                title="Bradley May Cry (Premium)",
                 art=R(ART)
             )
         ]
@@ -106,43 +128,48 @@ def EnduranceRunMenu():
     return oc
 
 @route('/video/giantbomb/videos')
-def Videos(cat_id=None):
+def Videos(cat_id=None, query=None, offset=0):
     oc = ObjectContainer()
 
-    if cat_id == '5-DP':
-        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=5&offset=161&format=json')['results']
-    elif cat_id == '5-P4':
-        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=5&format=json')['results']
-        videos += JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey + '&video_type=5&offset=100&limit=61&format=json')['results']
-        videos = [video for video in videos if not video['name'].startswith('The Matrix Online')]
-    elif cat_id == '5-MO':
-        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=5&offset=105&limit=21&format=json')['results']
-        videos = [video for video in videos if video['name'].startswith('The Matrix Online')]
-    elif cat_id:
-        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&video_type=' + cat_id + '&sort=-publish_date&format=json')['results']
-    else:
-        videos = JSON.ObjectFromURL(API_PATH + '/videos/?api_key=' + ApiKey() + '&sort=-publish_date&format=json')['results']
+    if cat_id and query: # for endurance runs
+        result = JSON.ObjectFromURL('%s/videos/?api_key=%s&video_type=%s&format=json&sort=publish_date:asc&filter=name:%s&offset=%s' % (API_PATH, ApiKey(), cat_id, query, offset))
+    elif cat_id: # for categories
+        result = JSON.ObjectFromURL('%s/videos/?api_key=%s&video_type=%s&format=json&offset=%s' % (API_PATH, ApiKey(), cat_id, offset))
+    elif query: # for search
+        result = JSON.ObjectFromURL('%s/videos/?api_key=%s&format=json&filter=name:%s&offset=%s' % (API_PATH, ApiKey(), query, offset))
+    else: # catch all
+        result = JSON.ObjectFromURL('%s/videos/?api_key=%s&format=json&offset=%s' % (API_PATH, ApiKey(), offset))
+
+    videos = result['results']
 
     for vid in videos:
-        if 'wallpaper_image' not in vid or not vid['wallpaper_image']: # or whatever it gets called
-            vid_art = R(ART)
-        else:
-            vid_art = vid['wallpaper_image']
-
-        api_key_string = ('&' if '?' in vid['site_detail_url'] else '?') + 'api_key=' + ApiKey()
-
         oc.add(
-                VideoClipObject(
-                    url=vid['site_detail_url'] + api_key_string,
-                    title=vid['name'],
-                    summary=vid['deck'],
-                    thumb=vid['image']['super_url'],
-                    art=vid_art,
-                    rating_key=vid['id']
-                )
+            VideoClipObject(
+                url=vid['api_detail_url'] + '?api_key=' + ApiKey() + '&format=json',
+                title=vid['name'],
+                summary=vid['deck'],
+                thumb=vid['image']['super_url'],
+                art=R(ART),
+                rating_key=vid['id']
+            )
+        )
+
+    listedSoFar = result['offset'] + result['number_of_page_results']
+    if listedSoFar < result['number_of_total_results']:
+        newOffset = listedSoFar + result['limit']
+        oc.add(
+            NextPageObject(
+                key=Callback(Videos, cat_id=cat_id, query=query, offset=newOffset),
+                title="Next Page"
+            )
         )
 
     return oc
 
 def ApiKey():
-    return API_KEY
+    if Prefs['apiKey']:
+        key = Prefs['apiKey']
+    else:
+        key = API_KEY
+
+    return key

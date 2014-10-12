@@ -10,5 +10,15 @@
 	<string>*</string>
 	<key>PlexFrameworkVersion</key>
 	<string>2</string>
+    <key>PlexURLServices</key>
+    <dict>
+        <key>GiantBomb</key>
+        <dict>
+            <key>Identifier</key>
+            <string>com.plexapp.plugins.giantbomb</string>
+            <key>URLPattern</key>
+            <string>^http://(www\.)?giantbomb\.com/api/video/\d{4}\-\d+/</string>
+        </dict>
+    </dict>
 </dict>
 </plist>

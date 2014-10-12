@@ -1,0 +1,66 @@
+HTTP_HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.94 Safari/537.36'}
+
+MediaObject.container = Container.MP4
+MediaObject.video_codec = VideoCodec.H264
+MediaObject.audio_codec = AudioCodec.AAC
+MediaObject.audio_channels = 2
+MediaObject.optimized_for_streaming = True
+
+####################################################################################################
+def MetadataObjectForURL(url):
+
+    json = JSON.ObjectFromURL(url)
+
+    if len(json['results']) < 1:
+        raise Ex.MediaNotAvailable
+
+    video = json['results']
+
+    return VideoClipObject(
+        title = video['name'],
+        summary = video['deck'],
+        thumb = Resource.ContentsOfURLWithFallback(video['image']['super_url']),
+        duration = video['length_seconds'] * 1000
+    )
+
+####################################################################################################
+def MediaObjectsForURL(url):
+
+    return [
+        MediaObject(
+            parts = [PartObject(key=Callback(PlayVideo, url=url, fmt='hd'))],
+            bitrate = 4000,
+            video_resolution = 720
+        ),
+        MediaObject(
+            parts = [PartObject(key=Callback(PlayVideo, url=url, fmt='high'))],
+            bitrate = 1800,
+            video_resolution = 720
+        ),
+        MediaObject(
+            parts = [PartObject(key=Callback(PlayVideo, url=url, fmt='low'))],
+            bitrate = 250,
+            video_resolution = 360
+        )
+    ]
+
+####################################################################################################
+@indirect
+def PlayVideo(url, fmt='hd'):
+
+    json = JSON.ObjectFromURL(url)
+
+    if len(json['results']) < 1:
+        raise Ex.MediaNotAvailable
+
+    video = json['results']
+
+    if fmt == 'hd' and 'hd_url' in video: # only subscribers get HD because they're special
+        hdUrl = video['hd_url'] + '&api_key=' + ApiKey()
+        return IndirectResponse(VideoClipObject, key=hdUrl)
+    elif fmt in ('hd', 'high') and 'high_url' in video:
+        return IndirectResponse(VideoClipObject, key=video['high_url'])
+    elif fmt in ('hd', 'high', 'low') and 'low_url' in video:
+        return IndirectResponse(VideoClipObject, key=video['low_url'])
+    else:
+        raise Ex.MediaNotAvailable
