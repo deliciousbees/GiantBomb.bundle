@@ -8,7 +8,7 @@
 		<dict>
 			<key>URLPatterns</key>
 			<array>
-				<string>^http://(www\.)?giantbomb\.com/api/video/\d{4}\-\d+/</string>
+				<string>^https?://(www\.)?giantbomb\.com/api/video/\d{4}\-\d+/</string>
 			</array>
 		</dict>
 	</dict>
