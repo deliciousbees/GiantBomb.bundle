@@ -1,5 +1,3 @@
-from urllib2 import HTTPError
-
 API_PATH = 'http://www.giantbomb.com/api'
 API_KEY = '70d735e54938286d6d9142727877107ced20e5ff'
 
@@ -13,7 +11,7 @@ def MainMenu():
 	# Live stream
 	try:
 		response = JSON.ObjectFromURL(API_PATH + '/chats/?api_key=' + ApiKey() + '&format=json')
-	except HTTPError as detail:
+	except Ex.HTTPError as detail:
 		Log.Error("Could not load list of live streams (server returned HTTP %d)", detail.code)
 	else:
 		chats = response['results']
@@ -49,7 +47,7 @@ def MainMenu():
 
 	try:
 		categories = JSON.ObjectFromURL(API_PATH + '/video_types/?api_key=' + ApiKey() + '&format=json')['results']
-	except HTTPError as detail:
+	except Ex.HTTPError as detail:
 		Log.Error("Could not load list of video categories (server returned HTTP %d)", detail.code)
 	else:
 		for cat in categories:
@@ -149,7 +147,7 @@ def Videos(cat_id=None, query=None, offset=0):
 			result = JSON.ObjectFromURL('%s/videos/?api_key=%s&format=json&filter=name:%s&offset=%s' % (API_PATH, ApiKey(), query, offset))
 		else: # catch all
 			result = JSON.ObjectFromURL('%s/videos/?api_key=%s&format=json&offset=%s' % (API_PATH, ApiKey(), offset))
-	except HTTPError as detail:
+	except Ex.HTTPError as detail:
 		Log.Error("Could not load list of videos for category '%d' and query '%s' (server returned HTTP %d)", cat_id, query, detail.code)
 	else:
 		videos = result['results']
