@@ -17,23 +17,24 @@ def MainMenu():
 		chats = response['results']
 
 		for chat in chats:
-			url = 'http://www.twitch.tv/' + chat['channel_name']
-			try:
-				thumb = chat['image']['super_url']
-			except:
-				thumb = R(ICON)
+			if chat['channel_name'] is not None:
+				url = 'http://www.twitch.tv/' + chat['channel_name']
+				try:
+					thumb = chat['image']['super_url']
+				except:
+					thumb = R(ICON)
 
-			oc.add(
-				VideoClipObject(
-					url=url,
-					title='LIVE: ' + chat['title'],
-					summary=chat['deck'],
-					source_title='Twitch.tv',
-					thumb=thumb,
-					art=R(ART),
-					rating_key=chat['channel_name']
+				oc.add(
+					VideoClipObject(
+						url=url,
+						title='LIVE: ' + chat['title'],
+						summary=chat['deck'],
+						source_title='Twitch.tv',
+						thumb=thumb,
+						art=R(ART),
+						rating_key=chat['channel_name']
+					)
 				)
-			)
 
 		oc.add(
 			DirectoryObject(
