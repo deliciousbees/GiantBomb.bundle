@@ -1,11 +1,5 @@
 HTTP_HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.94 Safari/537.36'}
 
-MediaObject.container = Container.MP4
-MediaObject.video_codec = VideoCodec.H264
-MediaObject.audio_codec = AudioCodec.AAC
-MediaObject.audio_channels = 2
-MediaObject.optimized_for_streaming = True
-
 apiKeyRegex = Regex('.+?api_key=(\w+).+?')
 
 ####################################################################################################
@@ -30,19 +24,40 @@ def MediaObjectsForURL(url):
 
     return [
         MediaObject(
-            parts = [PartObject(key=Callback(PlayVideo, url=url, fmt='hd'))],
+            container = Container.MP4,
             bitrate = 4000,
-            video_resolution = 720
+            video_codec = VideoCodec.H264,
+            video_resolution = 720,
+            audio_codec = AudioCodec.AAC,
+            audio_channels = 2,
+            optimized_for_streaming = True,
+            parts = [
+                PartObject(key=Callback(PlayVideo, url=url, fmt='hd'))
+            ],
         ),
         MediaObject(
-            parts = [PartObject(key=Callback(PlayVideo, url=url, fmt='high'))],
+            container = Container.MP4,
             bitrate = 1800,
-            video_resolution = 720
+            video_codec = VideoCodec.H264,
+            video_resolution = 720,
+            audio_codec = AudioCodec.AAC,
+            audio_channels = 2,
+            optimized_for_streaming = True,
+            parts = [
+                PartObject(key=Callback(PlayVideo, url=url, fmt='high'))
+            ],
         ),
         MediaObject(
-            parts = [PartObject(key=Callback(PlayVideo, url=url, fmt='low'))],
+            container = Container.MP4,
             bitrate = 250,
-            video_resolution = 360
+            video_codec = VideoCodec.H264,
+            video_resolution = 360,
+            audio_codec = AudioCodec.AAC,
+            audio_channels = 2,
+            optimized_for_streaming = True,
+            parts = [
+                PartObject(key=Callback(PlayVideo, url=url, fmt='low'))
+            ],
         )
     ]
 
