@@ -75,7 +75,7 @@ def PlayVideo(url, fmt='hd'):
     extractedApiKey = apiKeyRegex.search(url).group(1)
 
     if fmt == 'hd' and 'hd_url' in video: # only subscribers get HD because they're special
-        hdUrl = video['hd_url'] + '&api_key=' + extractedApiKey
+        hdUrl = video['hd_url'] + '?api_key=' + extractedApiKey
         return IndirectResponse(VideoClipObject, key=hdUrl)
     elif fmt in ('hd', 'high') and 'high_url' in video:
         return IndirectResponse(VideoClipObject, key=video['high_url'])
