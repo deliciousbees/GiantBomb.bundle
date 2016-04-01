@@ -167,10 +167,9 @@ def Videos(cat_id=None, query=None, offset=0):
 
 		listedSoFar = result['offset'] + result['number_of_page_results']
 		if listedSoFar < result['number_of_total_results']:
-			newOffset = listedSoFar + result['limit']
 			oc.add(
 				NextPageObject(
-					key=Callback(Videos, cat_id=cat_id, query=query, offset=newOffset),
+					key=Callback(Videos, cat_id=cat_id, query=query, offset=listedSoFar),
 					title="Next Page"
 				)
 			)
