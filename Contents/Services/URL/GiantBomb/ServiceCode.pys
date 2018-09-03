@@ -21,7 +21,6 @@ def MetadataObjectForURL(url):
 
 ####################################################################################################
 def MediaObjectsForURL(url):
-
     return [
         MediaObject(
             container = Container.MP4,
@@ -78,8 +77,10 @@ def PlayVideo(url, fmt='hd'):
         hdUrl = video['hd_url'] + '?api_key=' + extractedApiKey
         return IndirectResponse(VideoClipObject, key=hdUrl)
     elif fmt in ('hd', 'high') and 'high_url' in video:
-        return IndirectResponse(VideoClipObject, key=video['high_url'])
+        highUrl = video['high_url'] + '?api_key=' + extractedApiKey
+        return IndirectResponse(VideoClipObject, key=highUrl)
     elif fmt in ('hd', 'high', 'low') and 'low_url' in video:
-        return IndirectResponse(VideoClipObject, key=video['low_url'])
+        lowUrl = video['low_url'] + '?api_key=' + extractedApiKey
+        return IndirectResponse(VideoClipObject, key=lowUrl)
     else:
         raise Ex.MediaNotAvailable

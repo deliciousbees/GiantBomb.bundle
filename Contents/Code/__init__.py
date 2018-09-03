@@ -4,7 +4,7 @@ API_KEY = '70d735e54938286d6d9142727877107ced20e5ff'
 ART = 'art-default.jpg'
 ICON = 'icon-default.jpg'
 
-@handler('/video/giantbomb', 'Giant Bomb')
+@handler('/video/giantbomb', 'Unofficial Giant Bomb')
 def MainMenu():
 	oc = ObjectContainer()
 
@@ -49,7 +49,7 @@ def MainMenu():
 	try:
 		categories = JSON.ObjectFromURL(API_PATH + '/video_types/?api_key=' + ApiKey() + '&format=json')['results']
 	except Ex.HTTPError as detail:
-		Log.Error("Could not load list of video categories (server returned HTTP %d)", detail.code)
+		Log.Error("Could not load list of video shows (server returned HTTP %d)", detail.code)
 	else:
 		for cat in categories:
 			# Endurance Runs

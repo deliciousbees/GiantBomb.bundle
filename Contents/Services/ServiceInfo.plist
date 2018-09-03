@@ -9,6 +9,8 @@
 			<key>URLPatterns</key>
 			<array>
 				<string>^https?://(www\.)?giantbomb\.com/api/video/\d{4}\-\d+/</string>
+				<string>^https?://(www\.)?giantbomb-pdl\.akamaized\.net/api/video/\d{4}\-\d+/</string>
+				<string>^https?://(www\.)?giantbomb-vh\.akamaized\.net/api/video/\d{4}\-\d+/</string>
 			</array>
 		</dict>
 	</dict>

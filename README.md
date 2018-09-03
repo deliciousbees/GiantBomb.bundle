@@ -1,3 +1,5 @@
+This is an unofficial resurrection/maintenance version of the discontinued Giant Bomb channel app for Plex. If you're the original maintainer of this code, please let me know so I can credit you here!
+
 License
 -------
 
