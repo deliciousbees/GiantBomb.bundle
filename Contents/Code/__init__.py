@@ -17,7 +17,7 @@ def MainMenu(cat_id=None, query=None, offset=0):
 		oc.add(
 			DirectoryObject(
 				key='/video/unofficialgiantbomb/shows',
-				title='[All Shows]',
+				title='All Shows',
 				summary='Explore Giant Bomb content, organized by show.',
 				thumb=R(ICON),
 				art=R(ART)
@@ -49,7 +49,7 @@ def MainMenu(cat_id=None, query=None, offset=0):
 
 
 	try:
-		result = JSON.ObjectFromURL('%s/videos/?api_key=%s&format=json&offset=0' % (API_PATH, ApiKey()))
+		result = JSON.ObjectFromURL('%s/videos/?api_key=%s&format=json&offset=0&limit=20' % (API_PATH, ApiKey()))
 	except Ex.HTTPError as detail:
 		Log.Error("Could not load list of latest videos (server returned HTTP %d)", detail.code)
 	else:
@@ -83,23 +83,19 @@ def MainMenu(cat_id=None, query=None, offset=0):
 def AllShows():
 	oc = ObjectContainer()
 	try:
-		categories = JSON.ObjectFromURL(API_PATH + '/video_types/?api_key=' + ApiKey() + '&format=json')['results']
+		categories = JSON.ObjectFromURL(API_PATH + '/video_shows/?api_key=' + ApiKey() + '&sort=position:asc&format=json')['results']
 	except Ex.HTTPError as detail:
 		Log.Error("Could not load list of video shows (server returned HTTP %d)", detail.code)
 	else:
 		for cat in categories:
-			# Endurance Runs
-			if cat['id'] == 5:
-				route = '/video/unofficialgiantbomb/erun'
-			else:
-				route = '/video/unofficialgiantbomb/videos/?cat_id=' + str(cat['id'])
+			route = '/video/unofficialgiantbomb/videos/?cat_id=' + str(cat['id'])
 
 			oc.add(
 				DirectoryObject(
 					key=route,
-					title=cat['name'],
+					title=cat['title'],
 					summary=cat['deck'],
-					thumb=R(ICON),
+					thumb=cat['image']['super_url'],
 					art=R(ART)
 				)
 			)
@@ -122,68 +118,19 @@ def AllShows():
 
 	return oc
 
-@route('/video/unofficialgiantbomb/erun', allow_sync=True)
-def EnduranceRunMenu():
-	oc = ObjectContainer(
-		objects = [
-			DirectoryObject(
-				key='/video/unofficialgiantbomb/videos/?cat_id=5&query=Chrono%20Trigger',
-				title='Chrono Trigger',
-				art=R(ART)
-			),
-			DirectoryObject(
-				key='/video/unofficialgiantbomb/videos/?cat_id=5&query=Deadly%20Premonition',
-				title='Deadly Premonition',
-				art=R(ART)
-			),
-			DirectoryObject(
-				key='/video/unofficialgiantbomb/videos/?cat_id=5&query=Persona%204',
-				title='Persona 4',
-				art=R(ART)
-			),
-			DirectoryObject(
-				key='/video/unofficialgiantbomb/videos/?cat_id=5&query=Matrix%20Online',
-				title='The Matrix Online: Not Like This',
-				art=R(ART)
-			),
-			DirectoryObject(
-				key='/video/unofficialgiantbomb/videos/?cat_id=10&query=Breaking%20Brad%3A%20Demon%27s%20Souls',
-				title="Breaking Brad: Demon's Souls (Premium)",
-				art=R(ART)
-			),
-			DirectoryObject(
-				key='/video/unofficialgiantbomb/videos/?cat_id=10&query=Load%20Our%20Last%20Souls',
-				title="Load Our Last Souls (Premium)",
-				art=R(ART)
-			),
-			DirectoryObject(
-				key='/video/unofficialgiantbomb/videos/?cat_id=10&query=Metal%20Gear%20Scanlon',
-				title="Metal Gear Scanlon (Premium)",
-				art=R(ART)
-			),
-			DirectoryObject(
-				key='/video/unofficialgiantbomb/videos/?cat_id=10&query=Bradley%20May%20Cry',
-				title="Bradley May Cry (Premium)",
-				art=R(ART)
-			)
-		]
-	)
-
-	return oc
-
 @route('/video/unofficialgiantbomb/videos', allow_sync=True)
 def Videos(cat_id=None, query=None, offset=0):
 	oc = ObjectContainer()
 
 	try:
 		if cat_id and query: # for endurance runs
-			result = JSON.ObjectFromURL('%s/videos/?api_key=%s&video_type=%s&format=json&sort=publish_date:asc&filter=name:%s&offset=%s' % (API_PATH, ApiKey(), cat_id, query, offset))
+			result = JSON.ObjectFromURL('%s/videos/?api_key=%s&filter=video_show:%s&limit=20&format=json&sort=publish_date:asc&filter=name:%s&offset=%s' % (API_PATH, ApiKey(), cat_id, query, offset))
 		elif cat_id: # for categories
-			result = JSON.ObjectFromURL('%s/videos/?api_key=%s&video_type=%s&format=json&offset=%s' % (API_PATH, ApiKey(), cat_id, offset))
+			result = JSON.ObjectFromURL('%s/videos/?api_key=%s&filter=video_show:%s&limit=20&format=json&offset=%s' % (API_PATH, ApiKey(), cat_id, offset))
 		elif query: # for search
-			result = JSON.ObjectFromURL('%s/videos/?api_key=%s&format=json&filter=name:%s&offset=%s' % (API_PATH, ApiKey(), query, offset))
+			result = JSON.ObjectFromURL('%s/videos/?api_key=%s&format=json&limit=20&filter=name:%s&offset=%s' % (API_PATH, ApiKey(), query, offset))
 		else: # catch all
-			result = JSON.ObjectFromURL('%s/videos/?api_key=%s&format=json&offset=%s' % (API_PATH, ApiKey(), offset))
+			result = JSON.ObjectFromURL('%s/videos/?api_key=%s&format=json&limit=20&offset=%s' % (API_PATH, ApiKey(), offset))
 	except Ex.HTTPError as detail:
 		Log.Error("Could not load list of videos for category '%d' and query '%s' (server returned HTTP %d)", cat_id, query, detail.code)
 	else:
