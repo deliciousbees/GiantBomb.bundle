@@ -3,14 +3,15 @@ API_KEY = '70d735e54938286d6d9142727877107ced20e5ff'
 
 ART = 'art-default.jpg'
 ICON = 'icon-default.jpg'
+TITLE = 'Unofficial Giant Bomb'
 
-@handler('/video/unofficialgiantbomb', 'Unofficial Giant Bomb')
+@handler('/video/unofficialgiantbomb', TITLE)
 def MainMenu(cat_id=None, query=None, offset=0):
 	oc = ObjectContainer()
 
 	# Live stream
 	try:
-		response = JSON.ObjectFromURL(API_PATH + '/chats/?api_key=' + ApiKey() + '&format=json')
+		response = JSON.ObjectFromURL(API_PATH + '/video/current-live/?api_key=' + ApiKey() + '&format=json')
 	except Ex.HTTPError as detail:
 		Log.Error("Could not load list of live streams (server returned HTTP %d)", detail.code)
 	else:
@@ -24,27 +25,17 @@ def MainMenu(cat_id=None, query=None, offset=0):
 			)
 		)
 
-		chats = response['results']
 
-		for chat in chats:
-			if chat['channel_name'] is not None:
-				url = 'http://www.twitch.tv/' + chat['channel_name']
-				try:
-					thumb = chat['image']['super_url']
-				except:
-					thumb = R(ICON)
-
-				oc.add(
-					VideoClipObject(
-						url=url,
-						title='LIVE: ' + chat['title'],
-						summary=chat['deck'],
-						source_title='Twitch.tv',
-						thumb=thumb,
-						art=R(ART),
-						rating_key=chat['channel_name']
-					)
-				)
+	if response['video'] is not None:
+		oc.add(
+			VideoClipObject(
+				url=response['video']['stream'],
+				title='LIVE: ' + response['video']['title'],
+				summary=response['video']['title'],
+				thumb=response['video']['image'],
+				art=R(ART),
+			)
+		)
 
 
 
