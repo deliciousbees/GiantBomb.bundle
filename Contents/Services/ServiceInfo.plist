@@ -11,6 +11,7 @@
 				<string>^https?://(www\.)?giantbomb\.com/api/video/\d{4}\-\d+/</string>
 				<string>^https?://(www\.)?giantbomb-pdl\.akamaized\.net/api/video/\d{4}\-\d+/</string>
 				<string>^https?://(www\.)?giantbomb-vh\.akamaized\.net/api/video/\d{4}\-\d+/</string>
+				<string>^https?://cbsigameslive2-lh\.akamaihd\.net/i/[^/]/[^/]</string>
 			</array>
 		</dict>
 	</dict>

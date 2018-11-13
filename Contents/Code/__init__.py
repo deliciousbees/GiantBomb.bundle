@@ -9,34 +9,35 @@ TITLE = 'Unofficial Giant Bomb'
 def MainMenu(cat_id=None, query=None, offset=0):
 	oc = ObjectContainer()
 
+	oc.add(
+		DirectoryObject(
+			key='/video/unofficialgiantbomb/shows',
+			title='All Shows',
+			summary='Explore Giant Bomb content, organized by show.',
+			thumb=R(ICON),
+			art=R(ART)
+		)
+	)
+
 	# Live stream
 	try:
 		response = JSON.ObjectFromURL(API_PATH + '/video/current-live/?api_key=' + ApiKey() + '&format=json')
 	except Ex.HTTPError as detail:
 		Log.Error("Could not load list of live streams (server returned HTTP %d)", detail.code)
 	else:
-		oc.add(
-			DirectoryObject(
-				key='/video/unofficialgiantbomb/shows',
-				title='All Shows',
-				summary='Explore Giant Bomb content, organized by show.',
-				thumb=R(ICON),
-				art=R(ART)
+	    # this is a huge mess left over from the last release, bypassing for now
+		if response['video'] is not None:
+			oc.add(
+				VideoClipObject(
+					url='https://www.giantbomb.com/api/video/2300-13740/',
+					#url=response['video']['stream'],
+					title='LIVE NOW',
+					summary=response['video']['title'],
+					thumb=response['video']['image'],
+					art=R(ART),
+	                rating_key='live',
+				)
 			)
-		)
-
-
-	if response['video'] is not None:
-		oc.add(
-			VideoClipObject(
-				url=response['video']['stream'],
-				title='LIVE: ' + response['video']['title'],
-				summary=response['video']['title'],
-				thumb=response['video']['image'],
-				art=R(ART),
-			)
-		)
-
 
 
 	try:
